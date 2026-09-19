@@ -1,19 +1,23 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { BRAND, CONTACT_INFO, PROGRAM_CATEGORIES } from "@/lib/data";
+import { useLang } from "@/components/language/LanguageProvider";
 import logoImg from "../../public/Logo.png";
 
 const FOOTER_NAV = [
-  { label: "Home", href: "/" },
-  { label: "About", href: "/about" },
-  { label: "Courses", href: "/courses" },
-  { label: "Admissions", href: "/admissions" },
-  { label: "Gallery", href: "/gallery" },
-  { label: "Contact", href: "/contact" },
-];
+  { href: "/", key: "home" },
+  { href: "/about", key: "about" },
+  { href: "/courses", key: "courses" },
+  { href: "/admissions", key: "admissions" },
+  { href: "/gallery", key: "gallery" },
+  { href: "/contact", key: "contact" },
+] as const;
 
 export default function Footer() {
   const year = new Date().getFullYear();
+  const { t } = useLang();
 
   return (
     <footer className="bg-green-dark text-ivory/80 pt-20 pb-8">
@@ -28,19 +32,19 @@ export default function Footer() {
               />
             </Link>
             <p className="mt-[18px] max-w-[34ch] text-[14.5px] text-ivory/60">
-              A women-focused Islamic educational institution nurturing knowledge, understanding and tarbiyah since 2016.
+              {t.footer.about}
             </p>
           </div>
 
           <div>
             <h5 className="mb-[18px] text-[13px] font-bold uppercase tracking-[0.05em] text-ivory/50">
-              Navigate
+              {t.footer.navigate}
             </h5>
             <ul className="flex list-none flex-col gap-3 p-0 m-0">
               {FOOTER_NAV.map((link) => (
                 <li key={link.href}>
                   <Link href={link.href} className="text-[14.5px] text-ivory/85 transition-colors hover:text-gold-light">
-                    {link.label}
+                    {t.nav[link.key]}
                   </Link>
                 </li>
               ))}
@@ -49,13 +53,13 @@ export default function Footer() {
 
           <div>
             <h5 className="mb-[18px] text-[13px] font-bold uppercase tracking-[0.05em] text-ivory/50">
-              Programs
+              {t.footer.programs}
             </h5>
             <ul className="flex list-none flex-col gap-3 p-0 m-0">
               {PROGRAM_CATEGORIES.map((cat) => (
                 <li key={cat.title}>
                   <Link href="/courses" className="text-[14.5px] text-ivory/85 transition-colors hover:text-gold-light">
-                    {cat.title}
+                    {t.courses.categories.find((c) => c.en === cat.title)?.ur ?? cat.title}
                   </Link>
                 </li>
               ))}
@@ -64,7 +68,7 @@ export default function Footer() {
 
           <div>
             <h5 className="mb-[18px] text-[13px] font-bold uppercase tracking-[0.05em] text-ivory/50">
-              Contact
+              {t.footer.contact}
             </h5>
             <ul className="flex list-none flex-col gap-3 p-0 m-0">
               <li className="text-[14.5px] text-ivory/75">{CONTACT_INFO.address}</li>
@@ -89,7 +93,7 @@ export default function Footer() {
 
         <div className="mt-16 flex flex-wrap items-center justify-between gap-3 border-t border-ivory/14 pt-6">
           <span className="text-[13px] text-ivory/50">
-            © {year} {BRAND.name} {BRAND.subtitle}. All rights reserved.
+            © {year} {BRAND.name} {BRAND.subtitle}. {t.footer.copyright}
           </span>
           <div className="flex gap-4">
             <a href={CONTACT_INFO.facebookUrl} aria-label="Facebook" className="text-[13px] text-ivory/75 transition-colors hover:text-gold-light" target="_blank" rel="noopener noreferrer">

@@ -1,8 +1,11 @@
+"use client";
+
 import AboutHeading from "@/components/about/AboutHeading";
-import { ABOUT_PAGE } from "@/lib/data";
+import { useLang } from "@/components/language/LanguageProvider";
 
 export default function HistoryTimeline() {
-  const { history } = ABOUT_PAGE;
+  const { t, lang } = useLang();
+  const { history } = t.pages.about;
   return (
     <section className="bg-beige py-24" aria-labelledby="history-heading">
       <div className="mx-auto w-full max-w-[1240px] px-6">
@@ -17,7 +20,8 @@ export default function HistoryTimeline() {
                   isLast ? "" : "pb-12"
                 }`}
               >
-                <div className="pt-1 text-left font-display text-[22px] font-normal tracking-[-0.01em] text-green min-[601px]:text-right">
+                {/* Years stay Latin numerals; text alignment flips via text-start/text-end */}
+                <div className="pt-1 text-start font-display text-[22px] font-normal tracking-[-0.01em] text-green min-[601px]:text-end">
                   {entry.year}
                 </div>
                 <div className="hidden flex-col items-center min-[601px]:flex">

@@ -1,9 +1,12 @@
+"use client";
+
 import AboutHeading from "@/components/about/AboutHeading";
 import AboutPlaceholder from "@/components/about/AboutPlaceholder";
-import { ABOUT_PAGE } from "@/lib/data";
+import { useLang } from "@/components/language/LanguageProvider";
 
 export default function Leadership() {
-  const { leadership } = ABOUT_PAGE;
+  const { t } = useLang();
+  const { leadership } = t.pages.about;
   return (
     <section className="bg-beige py-24" aria-labelledby="leadership-heading">
       <div className="mx-auto w-full max-w-[1240px] px-6">
@@ -25,7 +28,7 @@ export default function Leadership() {
             </div>
           </div>
           <div className="pt-4">
-            <p className="mb-6 text-[17px] font-normal italic leading-[1.8] text-muted">
+            <p className="mb-6 text-[17px] font-normal leading-[1.8] text-muted">
               &quot;{leadership.quote}&quot;
             </p>
             {leadership.paragraphs.map((paragraph) => (

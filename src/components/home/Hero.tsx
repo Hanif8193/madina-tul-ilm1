@@ -1,5 +1,7 @@
+"use client";
+
 import Button from "@/components/Button";
-import { HERO } from "@/lib/data";
+import { useLang } from "@/components/language/LanguageProvider";
 import { wrap } from "@/lib/utils";
 
 function HeroArt() {
@@ -43,31 +45,38 @@ function HeroArt() {
 }
 
 export default function Hero() {
+  const { t } = useLang();
+  const hero = t.hero;
+
   return (
     <section className="relative pt-14 pb-20 md:pt-[72px] md:pb-24">
       <div className={`${wrap} grid items-center gap-16 lg:grid-cols-[1.05fr_0.95fr]`}>
         <div className="flex flex-col items-start">
           <p className="mb-8 flex items-center gap-2.5 text-[13px] font-bold uppercase tracking-[0.06em] text-green">
             <span aria-hidden="true" className="inline-block h-[1.5px] w-[22px] bg-gold" />
-            {HERO.eyebrow}
+            {hero.eyebrow}
           </p>
           <h1 className="font-display text-[clamp(38px,5vw,64px)] font-light leading-[1.05]">
-            {HERO.headline}
-            <br />
-            <em className="text-green">{HERO.headlineEm}</em>
+            {hero.headline}
+            {hero.headlineEm ? (
+              <>
+                <br />
+                <em className="text-green">{hero.headlineEm}</em>
+              </>
+            ) : null}
           </h1>
           <p className="mt-6 max-w-[46ch] text-[19px] text-muted">
-            {HERO.lede}
+            {hero.lede}
           </p>
           <div className="mt-9 flex flex-wrap gap-4">
-            <Button href={HERO.primaryCta.href}>{HERO.primaryCta.label}</Button>
-            <Button href={HERO.secondaryCta.href} variant="dark" className="px-6 py-2! self-center">
-              {HERO.secondaryCta.label}
+            <Button href="/courses">{t.actions.exploreCourses}</Button>
+            <Button href="/admissions" variant="dark" className="px-6 py-2! self-center">
+              {t.actions.enrollNow}
             </Button>
           </div>
           <div className="mt-9 inline-flex items-center gap-2.5 rounded-full border border-[var(--line)] bg-ivory px-4 py-[7px] text-[13px] font-bold text-green">
             <span className="h-2 w-2 rounded-full bg-gold" aria-hidden="true" />
-            {HERO.tag}
+            {hero.tag}
           </div>
         </div>
         <HeroArt />

@@ -1,16 +1,18 @@
 export type NavLink = {
   label: string;
   href: string;
+  // i18n key into the Header's translated nav object (src/lib/i18n.ts)
+  key: "home" | "about" | "courses" | "dars" | "admissions" | "gallery" | "contact";
 };
 
 export const NAV_LINKS: NavLink[] = [
-  { label: "Home", href: "/" },
-  { label: "About", href: "/about" },
-  { label: "Courses", href: "/courses" },
-  { label: "Dars-e-Nizami", href: "/courses#dars-e-nizami" },
-  { label: "Admissions", href: "/admissions" },
-  { label: "Gallery", href: "/gallery" },
-  { label: "Contact", href: "/contact" },
+  { label: "Home", href: "/", key: "home" },
+  { label: "About", href: "/about", key: "about" },
+  { label: "Courses", href: "/courses", key: "courses" },
+  { label: "Dars-e-Nizami", href: "/courses#dars-e-nizami", key: "dars" },
+  { label: "Admissions", href: "/admissions", key: "admissions" },
+  { label: "Gallery", href: "/gallery", key: "gallery" },
+  { label: "Contact", href: "/contact", key: "contact" },
 ];
 
 export const BRAND = {

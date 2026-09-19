@@ -12,6 +12,7 @@
 
   --font-display: var(--font-fraunces), Georgia, "Times New Roman", serif;
   --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-urdu: var(--font-noto-urdu), "Jameel Noori Nastaliq", "Noto Nastaliq Urdu", serif;
 }
 
 @layer base {
@@ -106,4 +107,66 @@
 .skip-link:focus {
   left: 16px;
   top: 16px;
+}
+
+/* ---------- Urdu (RTL) mode ---------- */
+
+/* font-urdu utility — Noto Nastaliq Urdu (loaded in layout.tsx). */
+.font-urdu {
+  font-family: var(--font-urdu);
+}
+
+/* Nastaliq needs generous line-height, larger optical size and no
+   negative letter-spacing (it collides glyphs). Latin serif/sans
+   headings swap to Nastaliq; weights are reduced (Nastaliq is dense). */
+html[lang="ur"] body {
+  font-family: var(--font-urdu);
+  line-height: 2.05;
+}
+
+html[lang="ur"] h1,
+html[lang="ur"] h2,
+html[lang="ur"] h3,
+html[lang="ur"] h4 {
+  font-family: var(--font-urdu);
+  letter-spacing: 0;
+  line-height: 1.9;
+}
+
+/* Keep numerals/stat values readable while labels go Nastaliq. */
+html[lang="ur"] .font-display {
+  font-family: var(--font-urdu);
+}
+
+/* Fraunces italic `em` accents (gold/green) become upright Nastaliq
+   with the accent color preserved. */
+html[lang="ur"] em {
+  font-style: normal;
+}
+
+/* Slightly reduce display sizes: Nastaliq renders visually larger. */
+html[lang="ur"] h1 {
+  font-size: clamp(30px, 4.2vw, 56px);
+}
+
+html[lang="ur"] h2 {
+  font-size: clamp(26px, 3vw, 40px);
+}
+
+/* Tracking-heavy uppercase eyebrows don't apply to Urdu script. */
+html[lang="ur"] .tracking-\[0\.18em\],
+html[lang="ur"] .tracking-\[0\.14em\],
+html[lang="ur"] .tracking-\[0\.1em\] {
+  letter-spacing: 0;
+}
+
+/* Left-positioned skip link mirrors in RTL. */
+html[dir="rtl"] .skip-link {
+  left: auto;
+  right: -999px;
+}
+
+html[dir="rtl"] .skip-link:focus {
+  left: auto;
+  right: 16px;
 }

@@ -4,8 +4,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { BRAND, NAV_LINKS } from "@/lib/data";
+import { NAV_LINKS } from "@/lib/data";
 import Button from "@/components/Button";
+import { LanguageToggleInline } from "@/components/language/LanguageToggle";
+import { useLang } from "@/components/language/LanguageProvider";
 import logoImg from "../../public/Logo.png";
 
 export default function Header() {
@@ -13,6 +15,7 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [hash, setHash] = useState("");
+  const { t } = useLang();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -90,22 +93,24 @@ export default function Header() {
                 <Link
                   href={link.href}
                   aria-current={isActive(link.href) ? "page" : undefined}
-                  className={`border-b pb-[3px] text-[12px] font-bold uppercase tracking-[0.1em] transition-colors ${
+                  className={`border-b border-transparent pb-[3px] text-[12px] font-bold uppercase tracking-[0.1em] transition-colors ${
                     isActive(link.href)
                       ? "border-gold text-green"
-                      : "border-transparent text-ink hover:text-green"
+                      : "text-ink hover:text-green"
                   }`}
                 >
-                  {link.label}
+                  {t.nav[link.key]}
                 </Link>
               </li>
             ))}
           </ul>
         </nav>
 
-        <div className="flex items-center gap-4">
-          <Button href="/admissions" className="hidden md:inline-flex">
-            Enroll Now
+        <div className="flex items-center gap-3 md:gap-4">
+          {/* Language switcher — next to Enroll Now; always visible from md up */}
+          <LanguageToggleInline className="hidden md:inline-flex" />
+          <Button href="/admissions" className="hidden lg:inline-flex">
+            {t.actions.enrollNow}
           </Button>
           <button
             type="button"
@@ -160,14 +165,16 @@ export default function Header() {
                 isActive(link.href) ? "text-green" : "text-ink"
               }`}
             >
-              {link.label}
+              {t.nav[link.key]}
             </Link>
           ))}
         </nav>
 
         <div className="mt-auto flex flex-col gap-3 pt-10">
+          {/* Full "EN | اردو" switcher, bordered, inside the mobile drawer */}
+          <LanguageToggleInline className="w-full justify-center py-2.5" />
           <Button href="/admissions" onClick={() => setMenuOpen(false)} className="w-full">
-            Enroll Now
+            {t.actions.enrollNow}
           </Button>
           <Button
             href="/courses"
@@ -175,7 +182,7 @@ export default function Header() {
             onClick={() => setMenuOpen(false)}
             className="w-full"
           >
-            Explore Courses
+            {t.actions.exploreCourses}
           </Button>
         </div>
       </div>

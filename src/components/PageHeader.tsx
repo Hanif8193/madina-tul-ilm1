@@ -1,3 +1,5 @@
+"use client";
+
 import { sectionPadding, wrap } from "@/lib/utils";
 
 type PageHeaderProps = {
@@ -14,7 +16,7 @@ export default function PageHeader({ eyebrow, title, description }: PageHeaderPr
           <span aria-hidden="true" className="inline-block h-[1.5px] w-[22px] bg-gold" />
           {eyebrow}
         </p>
-        <h1 className="max-w-[16ch] font-display text-[clamp(34px,5vw,54px)] font-bold leading-[1.08]">
+        <h1 className="max-w-[16ch] font-display text-[clamp(34px,5vw,54px)] font-normal leading-[1.08]">
           {title}
         </h1>
         {description ? (

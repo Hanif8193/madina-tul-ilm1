@@ -2,8 +2,11 @@
 
 import { useState, type FormEvent } from "react";
 import { CONTACT_INFO } from "@/lib/data";
+import { useLang } from "@/components/language/LanguageProvider";
 
 export default function WhatsAppForm() {
+  const { t } = useLang();
+  const form = t.pages.contact.form;
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
@@ -12,11 +15,11 @@ export default function WhatsAppForm() {
     event.preventDefault();
     const trimmedMessage = message.trim();
     if (!name.trim()) {
-      setError("Please enter your name.");
+      setError(form.errors.name);
       return;
     }
     if (!trimmedMessage) {
-      setError("Please enter a short message.");
+      setError(form.errors.message);
       return;
     }
     setError("");
@@ -33,15 +36,15 @@ export default function WhatsAppForm() {
       onSubmit={handleSubmit}
       className="rounded-md border border-[var(--line)] bg-ivory p-8 md:p-10"
     >
-      <h2 className="font-display text-[24px] font-semibold">Send us a Message</h2>
+      <h2 className="font-display text-[24px] font-semibold">{form.heading}</h2>
       <p className="mt-2 text-[14.5px] text-muted">
-        Fill in your details and we will open WhatsApp with your message ready to send.
+        {form.sub}
       </p>
 
       <div className="mt-8 space-y-5">
         <div>
           <label htmlFor="contact-name" className="mb-2 block text-[13px] font-bold text-ink">
-            Your Name
+            {form.nameLabel}
           </label>
           <input
             id="contact-name"
@@ -50,13 +53,13 @@ export default function WhatsAppForm() {
             value={name}
             onChange={(event) => setName(event.target.value)}
             className="w-full rounded-[3px] border border-[var(--line)] bg-ivory px-4 py-3 text-[15px] text-ink placeholder:text-muted focus:border-green focus:outline-none"
-            placeholder="e.g. Ayesha Khan"
+            placeholder={form.namePlaceholder}
           />
         </div>
 
         <div>
           <label htmlFor="contact-message" className="mb-2 block text-[13px] font-bold text-ink">
-            Message
+            {form.messageLabel}
           </label>
           <textarea
             id="contact-message"
@@ -65,7 +68,7 @@ export default function WhatsAppForm() {
             value={message}
             onChange={(event) => setMessage(event.target.value)}
             className="w-full resize-y rounded-[3px] border border-[var(--line)] bg-ivory px-4 py-3 text-[15px] text-ink placeholder:text-muted focus:border-green focus:outline-none"
-            placeholder="Which program are you interested in?"
+            placeholder={form.messagePlaceholder}
           />
         </div>
 
@@ -79,7 +82,7 @@ export default function WhatsAppForm() {
           type="submit"
           className="inline-flex w-full items-center justify-center gap-2 rounded-[3px] border-[1.5px] border-transparent bg-green px-6 py-3.5 text-[13px] font-semibold text-ivory transition-colors hover:bg-green-dark sm:w-auto"
         >
-          Send via WhatsApp
+          {form.submit}
         </button>
       </div>
     </form>

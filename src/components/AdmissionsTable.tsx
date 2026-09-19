@@ -1,21 +1,27 @@
+"use client";
+
 import Link from "next/link";
-import { SCHEDULE_CAPTION, SCHEDULE_ROWS } from "@/lib/data";
+import { SCHEDULE_CAPTION } from "@/lib/data";
+import { useLang } from "@/components/language/LanguageProvider";
 
 export default function AdmissionsTable() {
+  const { t } = useLang();
+  const schedule = t.schedule;
+
   return (
     <div>
       <div className="overflow-x-auto rounded-md border border-[var(--line)]">
         <table className="w-full min-w-[720px] border-collapse text-[14.5px]">
-          <caption className="p-0 text-left">
+          <caption className="p-0 text-start">
             <span className="sr-only">{SCHEDULE_CAPTION}</span>
           </caption>
           <thead>
             <tr>
-              {["Course", "Days", "Time", "Format", "Fee (PKR)"].map((heading) => (
+              {schedule.columns.map((heading) => (
                 <th
                   key={heading}
                   scope="col"
-                  className="whitespace-nowrap bg-beige px-[18px] py-3.5 text-left text-[12px] font-bold uppercase tracking-[0.04em] text-muted"
+                  className="whitespace-nowrap bg-beige px-[18px] py-3.5 text-start text-[12px] font-bold uppercase tracking-[0.04em] text-muted"
                 >
                   {heading}
                 </th>
@@ -23,7 +29,7 @@ export default function AdmissionsTable() {
             </tr>
           </thead>
           <tbody>
-            {SCHEDULE_ROWS.map((row) => (
+            {schedule.rows.map((row) => (
               <tr key={`${row.course}-${row.days}-${row.time}-${row.fee}`}>
                 <td className="whitespace-nowrap border-b border-[var(--line)] px-[18px] py-3.5">
                   {row.course}
@@ -46,11 +52,11 @@ export default function AdmissionsTable() {
         </table>
       </div>
       <p className="mt-6 text-[14.5px] text-muted">
-        Have questions about eligibility or timings?{" "}
+        {schedule.footerHint}{" "}
         <Link href="/contact" className="font-bold text-green underline decoration-gold underline-offset-2">
-          Contact our admissions team
+          {schedule.footerLink}
         </Link>{" "}
-        or enroll directly via WhatsApp.
+        {schedule.footerTail}
       </p>
     </div>
   );

@@ -1,8 +1,13 @@
+"use client";
+
 import Button from "@/components/Button";
-import { FINAL_CTA } from "@/lib/data";
+import { useLang } from "@/components/language/LanguageProvider";
 import { sectionPadding, wrap } from "@/lib/utils";
 
 export default function FinalCta() {
+  const { t } = useLang();
+  const finalCta = t.finalCta;
+
   return (
     <section
       className={`relative overflow-hidden bg-gradient-to-b from-green to-green-dark text-center text-ivory ${sectionPadding}`}
@@ -26,19 +31,23 @@ export default function FinalCta() {
           id="final-cta-heading"
           className="mx-auto max-w-[15ch] font-display text-[clamp(30px,4vw,48px)] font-normal leading-[1.1] tracking-[-0.02em]"
         >
-          {FINAL_CTA.heading}
-          <br />
-          <em className="text-gold">{FINAL_CTA.headingEm}</em>
+          {finalCta.heading}
+          {finalCta.headingEm ? (
+            <>
+              <br />
+              <em className="text-gold">{finalCta.headingEm}</em>
+            </>
+          ) : null}
         </h2>
         <p className="mx-auto mt-5 max-w-[52ch] text-[17px] text-ivory/75">
-          {FINAL_CTA.description}
+          {finalCta.description}
         </p>
         <div className="mt-9 flex flex-wrap justify-center gap-4">
-          <Button href={FINAL_CTA.primaryCta.href} variant="gold">
-            {FINAL_CTA.primaryCta.label}
+          <Button href="/admissions" variant="gold">
+            {t.actions.enrollNow}
           </Button>
-          <Button href={FINAL_CTA.secondaryCta.href} variant="outline-light">
-            {FINAL_CTA.secondaryCta.label}
+          <Button href="/courses" variant="outline-light">
+            {t.actions.exploreCourses}
           </Button>
         </div>
       </div>
