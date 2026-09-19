@@ -176,37 +176,40 @@ const en = {
       ],
     },
     contact: {
-      eyebrow: "Contact",
-      title: "Get in Touch",
-      description:
-        "Have a question about programs, timings or admissions? We would love to hear from you.",
+      // Content reproduced exactly from the original contact.html source.
+      hero: {
+        eyebrow: "Contact Us",
+        heading: "Start a Conversation",
+        headingEm: "With Madina-Tul-Ilm",
+      },
+      channelsEyebrow: "Get in Touch",
+      channelsTitle: "How to Reach Us",
       cards: [
-        {
-          title: "WhatsApp",
-          detail: "Fastest way to reach the admissions team.",
-        },
-        {
-          title: "Location",
-          detail: "Visit our campus in Bahadurabad, Karachi.",
-        },
-        {
-          title: "Follow Us",
-          detail: "Updates on classes, mehfils and events.",
-        },
+        { label: "WhatsApp", value: "0313-3502333" },
+        { label: "Facebook", value: "@Madinatulilmislamicacademy" },
+        { label: "Instagram", value: "@madinatulilmislamiccollege" },
+        { label: "Email", value: "madinatulilm.edu.pk@gmail.com" },
       ],
-      instagramLink: "Visit us on Instagram",
-      form: {
-        heading: "Send us a Message",
-        sub: "Fill in your details and we will open WhatsApp with your message ready to send.",
-        nameLabel: "Your Name",
-        namePlaceholder: "e.g. Ayesha Khan",
-        messageLabel: "Message",
-        messagePlaceholder: "Which program are you interested in?",
-        submit: "Send via WhatsApp",
-        errors: {
-          name: "Please enter your name.",
-          message: "Please enter a short message.",
-        },
+      banner: {
+        heading: "Ready to enroll or have a question?",
+        sub: "Reach out via WhatsApp — our team will respond promptly.",
+        cta: "Message on WhatsApp",
+      },
+      find: {
+        eyebrow: "Find Us",
+        title: "Visit Madina-Tul-Ilm",
+        addressLabel: "Address",
+        addressLines: [
+          "House No. 238, Block-3, Street 13",
+          "Bahadur Shah Zafar Road",
+          "B-Y-J-C-H-S",
+          "Opposite Rashid Seafood,",
+          "Next to Askari Bank",
+          "Bahadurabad, Karachi",
+        ],
+        landmarksLabel: "Landmarks",
+        landmarks: "Opposite Rashid Seafood · Next to Askari Bank · Bahadurabad",
+        mapsLink: "Open in Maps",
       },
     },
     about: {
@@ -634,27 +637,39 @@ const ur: Dict = {
       ],
     },
     contact: {
-      eyebrow: "رابطہ",
-      title: "ہم سے رابطہ کریں",
-      description: "پروگرامز، اوقات یا داخلوں کے بارے میں سوال ہے؟ ہم آپ سے سننا چاہیں گے۔",
+      hero: {
+        eyebrow: "رابطہ کریں",
+        heading: "ہم سے گفتگو کا آغاز کریں",
+        headingEm: "",
+      },
+      channelsEyebrow: "رابطہ کریں",
+      channelsTitle: "ہم تک کیسے پہنچیں",
       cards: [
-        { title: "واٹس ایپ", detail: "داخلہ ٹیم تک پہنچنے کا تیز ترین طریقہ۔" },
-        { title: "مقام", detail: "بہادر آباد، کراچی میں ہمارے کیمپس تشریف لائیں۔" },
-        { title: "ہمیں فالو کریں", detail: "کلاسوں، محافل اور تقریبات کی اپڈیٹس۔" },
+        { label: "واٹس ایپ", value: "0313-3502333" },
+        { label: "فیس بک", value: "@Madinatulilmislamicacademy" },
+        { label: "انسٹاگرام", value: "@madinatulilmislamiccollege" },
+        { label: "ای میل", value: "madinatulilm.edu.pk@gmail.com" },
       ],
-      instagramLink: "ہمیں انسٹاگرام پر دیکھیں",
-      form: {
-        heading: "ہمیں پیغام بھیجیں",
-        sub: "اپنی تفصیلات بھریں، ہم واٹس ایپ کھول دیں گے جہاں آپ کا پیغام تیار ہوگا۔",
-        nameLabel: "آپ کا نام",
-        namePlaceholder: "مثلاً عائشہ خان",
-        messageLabel: "پیغام",
-        messagePlaceholder: "آپ کس پروگرام میں دلچسپی رکھتی ہیں؟",
-        submit: "واٹس ایپ کے ذریعے بھیجیں",
-        errors: {
-          name: "براہِ کرم اپنا نام درج کریں۔",
-          message: "براہِ کرم مختصر پیغام درج کریں۔",
-        },
+      banner: {
+        heading: "داخلے کے لیے تیار ہیں یا کوئی سوال ہے؟",
+        sub: "واٹس ایپ کے ذریعے رابطہ کریں — ہماری ٹیم فوراً جواب دے گی۔",
+        cta: "واٹس ایپ پر پیغام بھیجیں",
+      },
+      find: {
+        eyebrow: "ہم یہاں ہیں",
+        title: "مدينۃ العلم تشریف لائیں",
+        addressLabel: "پتہ",
+        addressLines: [
+          "مکان نمبر 238، بلاک 3، سٹریٹ 13",
+          "بہادر شاہ ظفر روڈ",
+          "بی-وائے-جے-سی-ایچ-ایس",
+          "راشد سی فوڈ کے سامنے،",
+          "عسکری بینک کے ساتھ",
+          "بہادر آباد، کراچی",
+        ],
+        landmarksLabel: "نشانیاں",
+        landmarks: "راشد سی فوڈ کے سامنے · عسکری بینک کے ساتھ · بہادر آباد",
+        mapsLink: "میپس میں کھولیں",
       },
     },
     about: {

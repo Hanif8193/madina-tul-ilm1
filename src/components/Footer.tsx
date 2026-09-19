@@ -73,6 +73,14 @@ export default function Footer() {
             <ul className="flex list-none flex-col gap-3 p-0 m-0">
               <li className="text-[14.5px] text-ivory/75">{CONTACT_INFO.address}</li>
               <li>
+                <a
+                  href={`mailto:${CONTACT_INFO.email}`}
+                  className="text-[14.5px] text-ivory/85 transition-colors hover:text-gold-light"
+                >
+                  {CONTACT_INFO.email}
+                </a>
+              </li>
+              <li>
                 <a href={CONTACT_INFO.whatsappUrl} className="text-[14.5px] text-ivory/85 transition-colors hover:text-gold-light">
                   {CONTACT_INFO.whatsappLabel}
                 </a>

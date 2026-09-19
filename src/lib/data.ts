@@ -381,6 +381,7 @@ export const ABOUT_PAGE = {
 export const CONTACT_INFO = {
   whatsappLabel: "WhatsApp: 0313-3502333",
   whatsappUrl: "https://wa.me/923133502333",
+  email: "madinatulilm.edu.pk@gmail.com",
   location: "Bahadurabad, Karachi",
   address:
     "House No. 238, Block-3, Street 13, Bahadur Shah Zafar Road, B-Y-J-C-H-S, Opposite Rashid Seafood, Next to Askari Bank, Bahadurabad, Karachi",
