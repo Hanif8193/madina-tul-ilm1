@@ -101,7 +101,7 @@ export type ProgramCategory = {
 export const PROGRAM_CATEGORIES: ProgramCategory[] = [
   {
     label: "A",
-    title: "Qur'an Programs",
+    title: "Quranic Programs",
     items: [
       "Nazra Tul Qur'an",
       "Tajweed",

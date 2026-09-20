@@ -31,7 +31,7 @@ const en = {
   // (en here is the data.ts key, ur is the display translation.)
   courses: {
     categories: [
-      { en: "Qur'an Programs", ur: "قرآنی پروگرامز" },
+      { en: "Quranic Programs", ur: "قرآنی پروگرامز" },
       { en: "Islamic Studies", ur: "اسلامی علوم" },
       { en: "Specialized Programs", ur: "خصوصی پروگرامز" },
       { en: "Children's Programs", ur: "بچوں کے پروگرامز" },
@@ -143,6 +143,40 @@ const en = {
       { course: "Tafseer", days: "Saturday", time: "3 pm", format: "Online", fee: "2,000" },
     ],
   },
+  programs: {
+    heading: "Explore Our Programs",
+    viewAll: "View All Courses",
+    learnMore: "Learn More",
+    cards: [
+      {
+        n: "01",
+        title: "Qur'an Programs",
+        items: [
+          "Nazra Tul Qur'an",
+          "Tajweed",
+          "Hifz-ul-Qur'an",
+          "Hifz Maintenance",
+          "Quran Translation",
+          "Quran Understanding",
+        ],
+      },
+      {
+        n: "02",
+        title: "Islamic Studies",
+        items: ["Dars-e-Nizami", "Tafseer", "Hadith", "Ahkam e Shariat", "Seerah", "Islamic History"],
+      },
+      {
+        n: "03",
+        title: "Specialized Programs",
+        items: ["Takhassus Programs", "Short Courses", "Workshops"],
+      },
+      {
+        n: "04",
+        title: "Children's Programs",
+        items: ["Nazra", "Hifz", "Tajweed"],
+      },
+    ],
+  },
   finalCta: {
     heading: "Begin Your Journey in",
     headingEm: "Islamic Learning",
@@ -153,6 +187,12 @@ const en = {
     navigate: "Navigate",
     programs: "Programs",
     contact: "Contact",
+    address:
+      "House No. 238, Block-3, Street 13, Bahadur Shah Zafar Road, B-Y-J-C-H-S, Opposite Rashid Seafood, Next to Askari Bank, Bahadurabad, Karachi",
+    whatsapp: "WhatsApp",
+    whatsappLabel: "WhatsApp: 0313-3502333",
+    facebook: "Facebook",
+    instagram: "Instagram",
     copyright: "All rights reserved.",
   },
 
@@ -493,7 +533,7 @@ const ur: Dict = {
   },
   courses: {
     categories: [
-      { en: "Qur'an Programs", ur: "قرآنی پروگرامز" },
+      { en: "Quranic Programs", ur: "قرآنی پروگرامز" },
       { en: "Islamic Studies", ur: "اسلامی علوم" },
       { en: "Specialized Programs", ur: "خصوصی پروگرامز" },
       { en: "Children's Programs", ur: "بچوں کے پروگرامز" },
@@ -605,6 +645,33 @@ const ur: Dict = {
       { course: "تفسیر", days: "ہفتہ", time: "3 شام", format: "آن لائن", fee: "2,000" },
     ],
   },
+  programs: {
+    heading: "ہمارے پروگرامز کا جائزہ لیں",
+    viewAll: "تمام کورسز دیکھیں",
+    learnMore: "مزید جانیں",
+    cards: [
+      {
+        n: "01",
+        title: "قرآنی پروگرامز",
+        items: ["ناظرہ قرآن", "تجوید", "حفظ قرآن", "اعادہ و دہرائی", "ترجمہ قرآن", "قرآن فہمی"],
+      },
+      {
+        n: "02",
+        title: "اسلامی علوم",
+        items: ["درسِ نظامی", "تفسیر", "حدیث", "احکامِ شریعت", "سیرتِ طیبہ", "اسلامی تاریخ"],
+      },
+      {
+        n: "03",
+        title: "خصوصی پروگرامز",
+        items: ["تخصص پروگرامز", "مختصر کورسز", "ورکشاپس"],
+      },
+      {
+        n: "04",
+        title: "بچوں کے پروگرامز",
+        items: ["ناظرہ", "حفظ", "تجوید"],
+      },
+    ],
+  },
   finalCta: {
     heading: "علمِ دین کا سفر آج آغاز کریں",
     headingEm: "",
@@ -615,6 +682,12 @@ const ur: Dict = {
     navigate: "رہنمائی",
     programs: "پروگرامز",
     contact: "رابطہ",
+    address:
+      "مکان نمبر 238، بلاک 3، گلی 13، بہادر شاہ ظفر روڈ، بی-وائے-جے-سی-ایچ-ایس، بالمقابل راشد سی فوڈ، نزد عسکری بینک، بہادر آباد، کراچی",
+    whatsapp: "واٹس ایپ",
+    whatsappLabel: "واٹس ایپ: 0313-3502333",
+    facebook: "فیس بک",
+    instagram: "انسٹاگرام",
     copyright: "جملہ حقوق محفوظ ہیں۔",
   },
 

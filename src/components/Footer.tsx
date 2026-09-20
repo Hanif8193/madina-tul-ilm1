@@ -17,7 +17,11 @@ const FOOTER_NAV = [
 
 export default function Footer() {
   const year = new Date().getFullYear();
-  const { t } = useLang();
+  const { t, dir, lang } = useLang();
+
+  // Bilingual brand line: Urdu name in Urdu mode, English otherwise.
+  const brandName = dir === "rtl" ? t.brand.name : BRAND.name;
+  const brandSubtitle = dir === "rtl" ? t.brand.subtitle : BRAND.subtitle;
 
   return (
     <footer className="bg-green-dark text-ivory/80 pt-20 pb-8">
@@ -51,7 +55,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          <div>
+          <div dir={dir} className={dir === "ltr" ? "text-left" : "text-right"}>
             <h5 className="mb-[18px] text-[13px] font-bold uppercase tracking-[0.05em] text-ivory/50">
               {t.footer.programs}
             </h5>
@@ -59,40 +63,44 @@ export default function Footer() {
               {PROGRAM_CATEGORIES.map((cat) => (
                 <li key={cat.title}>
                   <Link href="/courses" className="text-[14.5px] text-ivory/85 transition-colors hover:text-gold-light">
-                    {t.courses.categories.find((c) => c.en === cat.title)?.ur ?? cat.title}
+                    {lang === "ur"
+                      ? (t.courses.categories.find((c) => c.en === cat.title)?.ur ?? cat.title)
+                      : cat.title}
                   </Link>
                 </li>
               ))}
             </ul>
           </div>
 
-          <div>
+          <div dir={dir}>
             <h5 className="mb-[18px] text-[13px] font-bold uppercase tracking-[0.05em] text-ivory/50">
               {t.footer.contact}
             </h5>
             <ul className="flex list-none flex-col gap-3 p-0 m-0">
-              <li className="text-[14.5px] text-ivory/75">{CONTACT_INFO.address}</li>
+              <li className="text-[14.5px] text-ivory/75">{t.footer.address}</li>
               <li>
                 <a
                   href={`mailto:${CONTACT_INFO.email}`}
                   className="text-[14.5px] text-ivory/85 transition-colors hover:text-gold-light"
+                  dir="ltr"
+                  style={{ unicodeBidi: "isolate" }}
                 >
                   {CONTACT_INFO.email}
                 </a>
               </li>
               <li>
                 <a href={CONTACT_INFO.whatsappUrl} className="text-[14.5px] text-ivory/85 transition-colors hover:text-gold-light">
-                  {CONTACT_INFO.whatsappLabel}
+                  {t.footer.whatsappLabel}
                 </a>
               </li>
               <li>
                 <a href={CONTACT_INFO.facebookUrl} className="text-[14.5px] text-ivory/85 transition-colors hover:text-gold-light" target="_blank" rel="noopener noreferrer">
-                  Facebook
+                  {t.footer.facebook}
                 </a>
               </li>
               <li>
                 <a href={CONTACT_INFO.instagramUrl} className="text-[14.5px] text-ivory/85 transition-colors hover:text-gold-light" target="_blank" rel="noopener noreferrer">
-                  Instagram
+                  {t.footer.instagram}
                 </a>
               </li>
             </ul>
@@ -101,17 +109,17 @@ export default function Footer() {
 
         <div className="mt-16 flex flex-wrap items-center justify-between gap-3 border-t border-ivory/14 pt-6">
           <span className="text-[13px] text-ivory/50">
-            © {year} {BRAND.name} {BRAND.subtitle}. {t.footer.copyright}
+            © {year} {brandName} {brandSubtitle}. {t.footer.copyright}
           </span>
           <div className="flex gap-4">
-            <a href={CONTACT_INFO.facebookUrl} aria-label="Facebook" className="text-[13px] text-ivory/75 transition-colors hover:text-gold-light" target="_blank" rel="noopener noreferrer">
-              Facebook
+            <a href={CONTACT_INFO.facebookUrl} aria-label={t.footer.facebook} className="text-[13px] text-ivory/75 transition-colors hover:text-gold-light" target="_blank" rel="noopener noreferrer">
+              {t.footer.facebook}
             </a>
-            <a href={CONTACT_INFO.instagramUrl} aria-label="Instagram" className="text-[13px] text-ivory/75 transition-colors hover:text-gold-light" target="_blank" rel="noopener noreferrer">
-              Instagram
+            <a href={CONTACT_INFO.instagramUrl} aria-label={t.footer.instagram} className="text-[13px] text-ivory/75 transition-colors hover:text-gold-light" target="_blank" rel="noopener noreferrer">
+              {t.footer.instagram}
             </a>
-            <a href={CONTACT_INFO.whatsappUrl} aria-label="WhatsApp" className="text-[13px] text-ivory/75 transition-colors hover:text-gold-light" target="_blank" rel="noopener noreferrer">
-              WhatsApp
+            <a href={CONTACT_INFO.whatsappUrl} aria-label={t.footer.whatsapp} className="text-[13px] text-ivory/75 transition-colors hover:text-gold-light" target="_blank" rel="noopener noreferrer">
+              {t.footer.whatsapp}
             </a>
           </div>
         </div>
