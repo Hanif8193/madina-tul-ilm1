@@ -4,18 +4,15 @@ import Button from "@/components/Button";
 import { useLang } from "@/components/language/LanguageProvider";
 import { wrap } from "@/lib/utils";
 
-function HeroArt() {
+function DiamondArt() {
   return (
-    <div className="relative flex h-full w-full items-center justify-center overflow-hidden bg-[#1B362A]">
-      {/* Thin golden diamond (rotated square) outline centered in the panel.
-          Sized so its 45°-rotated bounding box (≈1.41× width) stays inside
-          the container at every breakpoint. */}
+    <div className="absolute inset-0 flex items-center justify-center">
+      {/* Thin gold diamond ring overlay at 10% opacity per the reference */}
       <div
         aria-hidden="true"
-        className="absolute left-1/2 top-1/2 aspect-square w-[min(45%,280px)] -translate-x-1/2 -translate-y-1/2 rotate-45 border border-gold/60"
+        className="absolute left-1/2 top-1/2 aspect-square w-[min(45%,280px)] -translate-x-1/2 -translate-y-1/2 rotate-45 border border-gold/10"
       />
-
-      {/* Centered all-caps placeholder text inside the diamond */}
+      {/* Centered all-caps placeholder text */}
       <div className="relative z-10 flex flex-col items-center gap-2 px-6 text-center">
         <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-gold/70">
           Real Institutional Photograph
@@ -33,18 +30,23 @@ export default function Hero() {
   const hero = t.hero;
 
   return (
-    <section className="relative">
-      {/* True 50/50 split on desktop: no gap, art cell bleeds flush to the
-          right screen edge. Text cell padding provides the gutter. */}
-      <div className="grid items-stretch lg:grid-cols-2">
-        <div
-          className={`${wrap} flex flex-col items-start justify-center py-16 md:py-24 lg:pe-12`}
-        >
+    <section className="relative lg:min-h-[92vh]">
+      {/* Desktop: solid forest green art panel bleeds across the right half
+          of the viewport (left half in RTL), full section height. The copy
+          column below uses the shared container, so its left edge aligns
+          with the navbar and every other section. */}
+      <div className="absolute inset-y-0 end-0 hidden overflow-hidden bg-green lg:block">
+        <DiamondArt />
+      </div>
+
+      <div className={`${wrap} relative grid items-stretch gap-10 lg:grid-cols-2`}>
+        {/* Text column — aligned to the global container edges */}
+        <div className="flex flex-col items-start justify-center py-16 md:py-24 lg:pe-12">
           <p className="mb-8 flex items-center gap-2.5 text-[13px] font-bold uppercase tracking-[0.06em] text-green">
             <span aria-hidden="true" className="inline-block h-[1.5px] w-[22px] bg-gold" />
             {hero.eyebrow}
           </p>
-          <h1 className="font-display text-[clamp(38px,5vw,64px)] font-light leading-[1.05]">
+          <h1 className="font-display text-[clamp(38px,4.6vw,68px)] font-light leading-[1.1]">
             {hero.headline}
             {hero.headlineEm ? (
               <>
@@ -55,7 +57,10 @@ export default function Hero() {
           </h1>
           <p className="mt-6 max-w-[46ch] text-[19px] text-muted">{hero.lede}</p>
           <div className="mt-9 flex flex-wrap gap-4">
-            <Button href="/courses">{t.actions.exploreCourses}</Button>
+            <Button href="/courses">
+              {t.actions.exploreCourses}
+              <span aria-hidden="true" className="rtl:rotate-180">→</span>
+            </Button>
             <Button href="/admissions" variant="outline">
               {t.actions.enrollNow}
             </Button>
@@ -66,10 +71,9 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Right half: solid dark forest green, full height, flush to the
-            right screen edge on desktop (left half in RTL). */}
-        <div className="relative min-h-[420px] md:min-h-[560px] lg:min-h-[600px]">
-          <HeroArt />
+        {/* Mobile/tablet: art panel renders as a block below the copy */}
+        <div className="relative flex min-h-[420px] items-center justify-center overflow-hidden bg-green md:min-h-[560px] lg:hidden">
+          <DiamondArt />
         </div>
       </div>
     </section>

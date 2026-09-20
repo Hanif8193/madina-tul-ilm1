@@ -46,11 +46,11 @@ const en = {
   },
   who: {
     eyebrow: "Who We Are",
-    title: "Learn Deen With Knowledge,",
+    title: "Learn Deen With",
+    titleLine2: "Knowledge,",
     titleEm: "Understanding & Tarbiyah",
     paragraphs: [
-      "Madina-Tul-Ilm Islamic College is a women-focused educational institution established in 2016 with a vision of making authentic Islamic learning accessible, structured, and relevant to the needs of today's generation.",
-      "We provide an intellectually engaging environment where students pursue Islamic knowledge through a systematic approach grounded in the Qur'an, Sunnah, and established scholarly tradition — cultivating thoughtful, principled and spiritually grounded individuals who carry their knowledge into their families, communities and wider society.",
+      "Madina-Tul-Ilm Islamic College is a women-focused educational institution established in 2016. We provide an intellectually engaging environment where students can pursue Islamic knowledge through a systematic approach grounded in the Qur'an, Sunnah, and established scholarly tradition.",
     ],
     link: "Learn More About Us",
     stats: [
@@ -144,6 +144,7 @@ const en = {
     ],
   },
   programs: {
+    eyebrow: "Programs",
     heading: "Explore Our Programs",
     viewAll: "View All Courses",
     learnMore: "Learn More",
@@ -168,12 +169,24 @@ const en = {
       {
         n: "03",
         title: "Specialized Programs",
-        items: ["Takhassus Programs", "Short Courses", "Workshops"],
+        items: [
+          "Takhassus fil Qur'an",
+          "Advanced Tajweed & Qira'at",
+          "Tarbiyah & Counseling",
+          "Arabic Language Courses",
+          "Online Global Classes",
+        ],
       },
       {
         n: "04",
         title: "Children's Programs",
-        items: ["Nazra", "Hifz", "Tajweed"],
+        items: [
+          "Basic Qaida & Tajweed",
+          "Kids Hifz Class",
+          "Daily Duas & Adab",
+          "Weekend Islamic School",
+          "Summer Islamic Camp",
+        ],
       },
     ],
   },
@@ -549,10 +562,10 @@ const ur: Dict = {
   who: {
     eyebrow: "ہم کون ہیں",
     title: "علم کے ساتھ دین کی سیکھ،",
+    titleLine2: "",
     titleEm: "فہم اور تربیت",
     paragraphs: [
-      "مدينۃ العلم اسلامی کالج خواتین کے لیے مرکوز ایک تعلیمی ادارہ ہے جس کی بنیاد 2016ء میں اس مقصد سے رکھی گئی کہ مستند اسلامی تعلیم کو آسان، منظم اور آج کی نسل کی ضروریات کے مطابق بنایا جائے۔",
-      "ہم ایک ایسا فکری ماحول فراہم کرتے ہیں جہاں طالبات قرآن، سنت اور مستند علمی روایت پر مبنی منظم طریقے سے اسلامی علوم حاصل کرتی ہیں — اور اپنے گھر، معاشرے اور ملک میں علم و عمل کا چراغ روشن کرتی ہیں۔",
+      "مدينۃ العلم اسلامی کالج خواتین کے لیے مرکوز ایک تعلیمی ادارہ ہے جس کی بنیاد 2016ء میں اس مقصد سے رکھی گئی کہ مستند اسلامی تعلیم کو آسان، منظم اور آج کی نسل کی ضروریات کے مطابق بنایا جائے۔ ہم ایک ایسا فکری ماحول فراہم کرتے ہیں جہاں طالبات قرآن، سنت اور مستند علمی روایت پر مبنی منظم طریقے سے اسلامی علوم حاصل کر سکیں۔",
     ],
     link: "ہمارے بارے میں مزید جانیں",
     stats: [
@@ -646,6 +659,7 @@ const ur: Dict = {
     ],
   },
   programs: {
+    eyebrow: "پروگرامز",
     heading: "ہمارے پروگرامز کا جائزہ لیں",
     viewAll: "تمام کورسز دیکھیں",
     learnMore: "مزید جانیں",
@@ -663,12 +677,24 @@ const ur: Dict = {
       {
         n: "03",
         title: "خصوصی پروگرامز",
-        items: ["تخصص پروگرامز", "مختصر کورسز", "ورکشاپس"],
+        items: [
+          "تخصص فی القرآن",
+          "اعلیٰ تجوید و قراءت",
+          "تربیت و کاؤنسلنگ",
+          "کورسزِ زبانِ عربی",
+          "عالمگیر آن لائن کلاسز",
+        ],
       },
       {
         n: "04",
         title: "بچوں کے پروگرامز",
-        items: ["ناظرہ", "حفظ", "تجوید"],
+        items: [
+          "بنیادی قاعدہ و تجوید",
+          "بچوں کا حفظ کلاس",
+          "روزمرہ دعائیں و آداب",
+          "ویکینڈ اسلامی اسکول",
+          "سمر اسلامی کیمپ",
+        ],
       },
     ],
   },

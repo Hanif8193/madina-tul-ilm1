@@ -10,7 +10,7 @@ export default function FinalCta() {
 
   return (
     <section
-      className={`relative overflow-hidden bg-gradient-to-b from-green to-green-dark text-center text-ivory ${sectionPadding}`}
+      className={`relative overflow-hidden bg-green-dark text-center text-ivory ${sectionPadding}`}
       aria-labelledby="final-cta-heading"
     >
       <div

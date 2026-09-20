@@ -1,21 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { NAV_LINKS } from "@/lib/data";
 import Button from "@/components/Button";
 import { LanguageToggleInline } from "@/components/language/LanguageToggle";
 import { useLang } from "@/components/language/LanguageProvider";
-import logoImg from "../../public/Logo.png";
 
 export default function Header() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [hash, setHash] = useState("");
-  const { t } = useLang();
+  const { t, lang } = useLang();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -61,26 +59,32 @@ export default function Header() {
     <Link
       href="/"
       aria-label="Madina-Tul-Ilm Islamic College — Home"
-      className="shrink-0"
+      className="flex shrink-0 flex-col leading-none"
     >
-      <Image
-        src={logoImg}
-        alt="Madina-Tul-Ilm Logo"
-        priority
-        className="h-8 w-auto md:h-10"
-      />
+      {/* Text logo lockup per the reference: Fraunces italic name + gold
+          uppercase subtext. Urdu mode swaps to the Urdu brand strings. */}
+      <span
+        className={`font-display italic text-[22px] text-green ${
+          lang === "ur" ? "not-italic font-urdu text-[20px]" : ""
+        }`}
+      >
+        {lang === "ur" ? t.brand.name : "Madina-Tul-Ilm"}
+      </span>
+      <span className="mt-1 text-[9px] font-bold uppercase tracking-[0.16em] text-gold">
+        {lang === "ur" ? t.brand.subtitle : "ISLAMIC COLLEGE"}
+      </span>
     </Link>
   );
 
   return (
     <header
-      className={`sticky top-0 z-[100] border-b backdrop-blur-md transition-all duration-300 ${
+      className={`sticky top-0 z-[100] h-[76px] border-b backdrop-blur-[8px] transition-colors duration-300 ${
         scrolled
-          ? "border-[var(--line)] bg-ivory/95 shadow-[0_1px_0_rgba(23,32,28,0.06)]"
-          : "border-transparent bg-ivory/95"
+          ? "border-[rgba(31,58,46,0.08)] bg-[rgba(247,244,236,0.96)] shadow-[0_1px_0_rgba(23,32,28,0.06)]"
+          : "border-transparent bg-[rgba(247,244,236,0.96)]"
       }`}
     >
-      <div className="mx-auto flex w-full max-w-[1240px] items-center justify-between gap-6 px-5 py-4 md:px-8">
+      <div className="mx-auto flex h-full w-full max-w-[1240px] items-center justify-between gap-6 px-5 md:px-8">
         {logo}
 
         <nav
@@ -96,7 +100,7 @@ export default function Header() {
                   className={`border-b border-transparent pb-[3px] text-[12px] font-bold uppercase tracking-[0.1em] transition-colors ${
                     isActive(link.href)
                       ? "border-gold text-green"
-                      : "text-ink hover:text-green"
+                      : "text-muted hover:text-green"
                   }`}
                 >
                   {t.nav[link.key]}
@@ -109,7 +113,7 @@ export default function Header() {
         <div className="flex items-center gap-3 md:gap-4">
           {/* Language switcher — next to Enroll Now; always visible from md up */}
           <LanguageToggleInline className="hidden md:inline-flex" />
-          <Button href="/admissions" className="hidden lg:inline-flex">
+          <Button href="/admissions" className="hidden px-6! py-[11px]! lg:inline-flex">
             {t.actions.enrollNow}
           </Button>
           <button

@@ -7,7 +7,6 @@ import Philosophy from "@/components/home/Philosophy";
 import Journey from "@/components/home/Journey";
 import Founder from "@/components/home/Founder";
 import GalleryPreview from "@/components/home/GalleryPreview";
-import Admissions from "@/components/home/Admissions";
 import FinalCta from "@/components/home/FinalCta";
 
 export default function HomePage() {
@@ -22,7 +21,6 @@ export default function HomePage() {
       <Journey />
       <Founder />
       <GalleryPreview />
-      <Admissions />
       <FinalCta />
     </>
   );

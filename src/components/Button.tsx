@@ -21,12 +21,11 @@ const VARIANT_CLASSES: Record<Variant, string> = {
   // always-visible hover darkening) — for the Home page "Enroll Now".
   dark:
     "border-green bg-green text-ivory rounded-none hover:border-green-dark hover:bg-green-dark",
-  // Light outline button: transparent (section beige shows through), thin
-  // visible 1px light-gray border, dark text. Hover keeps the background
-  // untouched and smoothly darkens only the border. — for the Hero "Enroll
-  // Now". `border!` narrows the base's 2px width to 1px.
+  // Light outline button: transparent background, thin green border at
+  // 30% opacity, green text; hover deepens the border to full green with
+  // the background untouched. — for the Hero "Enroll Now".
   outline:
-    "border! border-gray-300 border-solid bg-transparent text-gray-900 rounded-none hover:border-gray-800",
+    "border! border-green/30 border-solid bg-transparent text-green rounded-none hover:border-green",
 };
 
 type ButtonProps = {

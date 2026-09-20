@@ -1,5 +1,40 @@
 @import "tailwindcss";
 
+/* ---------- Urdu fonts ---------- */
+
+/* Proprietary Urdu fonts (Alqalam Ferdious for headings, Jameel Noori
+   Nastaleeq for body). Browsers may have Jameel Noori installed (common on
+   Urdu users' machines) — `local()` sources let it be used without a
+   download. When the licensed .ttf/.woff2 files are dropped into
+   public/fonts/ with the names below, they load automatically via src()
+   (files served from the site root). Noto Nastaliq Urdu (loaded in
+   layout.tsx via next/font) stays in every fallback chain so Urdu text
+   renders correctly even with neither font available. */
+
+@font-face {
+  font-family: "Alqalam Ferdious";
+  src:
+    local("Alqalam Ferdious"),
+    local("AlQalam Ferdious"),
+    url("/fonts/Alqalam-Ferdious.ttf") format("truetype"),
+    url("/fonts/Alqalam-Ferdious.woff2") format("woff2");
+  font-display: swap;
+  font-style: normal;
+  font-weight: 400 700;
+}
+
+@font-face {
+  font-family: "Jameel Noori Nastaleeq";
+  src:
+    local("Jameel Noori Nastaleeq"),
+    local("Jameel Noori Nastaleeq v1.0"),
+    url("/fonts/Jameel-Noori-Nastaleeq.ttf") format("truetype"),
+    url("/fonts/Jameel-Noori-Nastaleeq.woff2") format("woff2");
+  font-display: swap;
+  font-style: normal;
+  font-weight: 400 700;
+}
+
 @theme {
   --color-ivory: #f7f4ec;
   --color-beige: #eee9de;
@@ -13,6 +48,16 @@
   --font-display: var(--font-fraunces), Georgia, "Times New Roman", serif;
   --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
   --font-urdu: var(--font-noto-urdu), "Jameel Noori Nastaliq", "Noto Nastaliq Urdu", serif;
+
+  /* Urdu display face for headings; falls back to Nastaliq (Noto loaded
+     via next/font) when Alqalam Ferdious is absent. */
+  --font-urdu-heading: "Alqalam Ferdious", var(--font-noto-urdu),
+    "Jameel Noori Nastaleeq", "Noto Nastaliq Urdu", serif;
+
+  /* Urdu body/reading face; Jameel Noori first, Noto Nastaliq fallback.
+     `Urdu Typesetting` is a widely installed Windows Nastaliq fallback. */
+  --font-urdu-body: "Jameel Noori Nastaleeq", "Urdu Typesetting",
+    var(--font-noto-urdu), "Noto Nastaliq Urdu", serif;
 }
 
 @layer base {
@@ -117,26 +162,34 @@
 }
 
 /* Nastaliq needs generous line-height, larger optical size and no
-   negative letter-spacing (it collides glyphs). Latin serif/sans
-   headings swap to Nastaliq; weights are reduced (Nastaliq is dense). */
+   negative letter-spacing (it collides glyphs). */
+
+/* Headings use Alqalam Ferdious (font-urdu-heading); everything else
+   (body copy, lists, links, buttons, inputs) uses Jameel Noori Nastaleeq
+   (font-urdu-body). Fallback: Noto Nastaliq Urdu. */
 html[lang="ur"] body {
-  font-family: var(--font-urdu);
+  font-family: var(--font-urdu-body);
   line-height: 2.05;
 }
 
 html[lang="ur"] h1,
 html[lang="ur"] h2,
 html[lang="ur"] h3,
-html[lang="ur"] h4 {
-  font-family: var(--font-urdu);
+html[lang="ur"] h4,
+html[lang="ur"] h5,
+html[lang="ur"] h6 {
+  font-family: var(--font-urdu-heading);
   letter-spacing: 0;
   line-height: 1.9;
 }
 
-/* Keep numerals/stat values readable while labels go Nastaliq. */
+/* Heading utility classes used across the site (font-display) also swap
+   to the Urdu display face in Urdu mode. */
 html[lang="ur"] .font-display {
-  font-family: var(--font-urdu);
+  font-family: var(--font-urdu-heading);
 }
+
+/* Keep numerals/stat values readable while labels go Nastaliq. */
 
 /* Fraunces italic `em` accents (gold/green) become upright Nastaliq
    with the accent color preserved. */
@@ -158,6 +211,20 @@ html[lang="ur"] .tracking-\[0\.18em\],
 html[lang="ur"] .tracking-\[0\.14em\],
 html[lang="ur"] .tracking-\[0\.1em\] {
   letter-spacing: 0;
+}
+
+/* Loosen tight Tailwind leading utilities in Urdu mode: Nastaliq dots and
+   diacritics render above/below the baseline and get clipped at 1.1–1.6. */
+html[lang="ur"] .leading-none,
+html[lang="ur"] .leading-tight,
+html[lang="ur"] .leading-snug,
+html[lang="ur"] .leading-normal,
+html[lang="ur"] .leading-relaxed {
+  line-height: 2;
+}
+
+html[lang="ur"] .leading-loose {
+  line-height: 2.2;
 }
 
 /* Left-positioned skip link mirrors in RTL. */

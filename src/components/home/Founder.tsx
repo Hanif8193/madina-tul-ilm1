@@ -12,7 +12,7 @@ export default function Founder() {
     <section className={sectionPadding} aria-labelledby="founder-heading">
       <div className={`${wrap} grid items-center gap-16 lg:grid-cols-[0.85fr_1.15fr]`}>
         <ImagePlaceholder
-          className="aspect-[4/5] rounded-md"
+          className="aspect-[3/4] rounded-md"
           tone="green"
           label={founder.photoLabel}
           subLabel="[Placeholder — replace with photograph]"
