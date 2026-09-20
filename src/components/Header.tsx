@@ -1,19 +1,21 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { NAV_LINKS } from "@/lib/data";
 import Button from "@/components/Button";
 import { LanguageToggleInline } from "@/components/language/LanguageToggle";
 import { useLang } from "@/components/language/LanguageProvider";
+import logoImg from "../../public/Logo.png";
 
 export default function Header() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [hash, setHash] = useState("");
-  const { t, lang } = useLang();
+  const { t } = useLang();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -59,24 +61,19 @@ export default function Header() {
     <Link
       href="/"
       aria-label="Madina-Tul-Ilm Islamic College — Home"
-      className="flex shrink-0 flex-col leading-none"
+      className="shrink-0"
     >
-      {/* Text logo lockup per the reference: Fraunces italic name + gold
-          uppercase subtext. Urdu mode swaps to the Urdu brand strings. */}
-      <span
-        className={`font-display italic text-[22px] text-green ${
-          lang === "ur" ? "not-italic font-urdu text-[20px]" : ""
-        }`}
-      >
-        {lang === "ur" ? t.brand.name : "Madina-Tul-Ilm"}
-      </span>
-      <span className="mt-1 text-[9px] font-bold uppercase tracking-[0.16em] text-gold">
-        {lang === "ur" ? t.brand.subtitle : "ISLAMIC COLLEGE"}
-      </span>
+      <Image
+        src={logoImg}
+        alt="Madina-Tul-Ilm Logo"
+        priority
+        className="h-12 w-auto md:h-14"
+      />
     </Link>
   );
 
   return (
+    <>
     <header
       className={`sticky top-0 z-[100] h-[76px] border-b backdrop-blur-[8px] transition-colors duration-300 ${
         scrolled
@@ -88,7 +85,7 @@ export default function Header() {
         {logo}
 
         <nav
-          className="hidden items-center gap-6 lg:flex"
+          className="hidden items-center gap-6 md:flex"
           aria-label="Primary"
         >
           <ul className="flex list-none gap-6 p-0 m-0">
@@ -111,38 +108,54 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center gap-3 md:gap-4">
-          {/* Language switcher — next to Enroll Now; always visible from md up */}
-          <LanguageToggleInline className="hidden md:inline-flex" />
-          <Button href="/admissions" className="hidden px-6! py-[11px]! lg:inline-flex">
-            {t.actions.enrollNow}
-          </Button>
+          {/* Wrapper divs (not display classes on the components) guarantee
+              these stay hidden on mobile: the Button's own `inline-flex` base
+              class out-cascades `hidden` in Tailwind v4's utility order,
+              which previously forced the Enroll button onto mobile and
+              pushed the hamburger out of the 76px bar. */}
+          <div className="hidden md:block">
+            <LanguageToggleInline />
+          </div>
+          <div className="hidden lg:block">
+            <Button href="/admissions" className="px-6! py-[11px]!">
+              {t.actions.enrollNow}
+            </Button>
+          </div>
+          {/* Hamburger: 24x24 forest-green icon, visible only below md,
+              raised above siblings */}
           <button
             type="button"
-            className="cursor-pointer border-none bg-transparent p-1.5 text-ink lg:hidden"
+            className="relative z-[110] flex h-9 w-9 cursor-pointer flex-col items-center justify-center border-none bg-transparent p-0 md:hidden"
             aria-label={menuOpen ? "Close menu" : "Open menu"}
             aria-expanded={menuOpen}
             aria-controls="mobile-navigation"
             onClick={() => setMenuOpen((open) => !open)}
           >
             <span
-              className={`block h-0.5 w-6 bg-ink transition-transform duration-250 ${menuOpen ? "translate-y-[3.5px] rotate-45" : ""}`}
+              className={`block h-[2px] w-6 bg-green transition-transform duration-250 ${menuOpen ? "translate-y-[7px] rotate-45" : ""}`}
             />
             <span
-              className={`my-1 block h-0.5 w-6 bg-ink transition-opacity duration-250 ${menuOpen ? "opacity-0" : ""}`}
+              className={`my-[5px] block h-[2px] w-6 bg-green transition-opacity duration-250 ${menuOpen ? "opacity-0" : ""}`}
             />
             <span
-              className={`block h-0.5 w-6 bg-ink transition-transform duration-250 ${menuOpen ? "-translate-y-[3.5px] -rotate-45" : ""}`}
+              className={`block h-[2px] w-6 bg-green transition-transform duration-250 ${menuOpen ? "-translate-y-[7px] -rotate-45" : ""}`}
             />
           </button>
         </div>
       </div>
+    </header>
 
+      {/* Mobile drawer rendered OUTSIDE <header>: the header's backdrop-blur
+          creates a CSS containing block that would trap this fixed overlay
+          inside the 76px header bar instead of covering the viewport, letting
+          page content bleed through. Outside, inset-0 spans the real viewport
+          over an opaque ivory base. */}
       <div
         id="mobile-navigation"
         role="dialog"
         aria-modal="true"
         aria-label="Mobile navigation"
-        className={`fixed inset-0 z-[150] flex flex-col bg-ivory px-7 py-6 transition-transform duration-300 lg:hidden ${
+        className={`fixed inset-0 z-[150] flex min-h-screen w-full flex-col bg-ivory px-7 py-6 transition-transform duration-300 lg:hidden ${
           menuOpen ? "translate-x-0" : "pointer-events-none translate-x-full"
         }`}
       >
@@ -165,8 +178,8 @@ export default function Header() {
               href={link.href}
               aria-current={isActive(link.href) ? "page" : undefined}
               onClick={() => setMenuOpen(false)}
-              className={`border-b border-[var(--line)] py-3.5 text-[16px] font-semibold ${
-                isActive(link.href) ? "text-green" : "text-ink"
+              className={`block border-b px-6 py-4 text-[16px] font-semibold text-green transition-colors ${
+                isActive(link.href) ? "border-gold" : "border-[var(--line)]"
               }`}
             >
               {t.nav[link.key]}
@@ -187,9 +200,8 @@ export default function Header() {
             className="w-full"
           >
             {t.actions.exploreCourses}
-          </Button>
-        </div>
+          </Button>          </div>
       </div>
-    </header>
+    </>
   );
 }
