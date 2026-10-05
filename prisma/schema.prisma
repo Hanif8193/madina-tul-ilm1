@@ -1,0 +1,400 @@
+// Madina-Tul-Ilm — data model
+//
+// Design notes that matter later:
+//  * The public site is bilingual but the locale is NOT in the URL (i18n is
+//    client-side, localStorage-backed). So every user-facing text field is
+//    stored twice, as `<field>En` / `<field>Ur`. This keeps Urdu rendering and
+//    RTL working without ever teaching the database about routing.
+//  * `Payment` exists as a schema-level concept only. There is no provider
+//    SDK, no webhook route and no runtime code. It exists so that adding
+//    Stripe / Easypaisa / JazzCash later is a migration + a handler, not a
+//    rewrite of the application.
+//
+// Docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// --- Enums ----------------------------------------------------------------
+
+enum Role {
+  ADMIN
+  EDITOR
+}
+
+enum AdmissionStatus {
+  PENDING
+  UNDER_REVIEW
+  APPROVED
+  REJECTED
+  ENROLLED
+  WITHDRAWN
+}
+
+enum DeliveryMode {
+  ONSITE
+  ONLINE
+  HYBRID
+}
+
+enum PaymentStatus {
+  PENDING
+  INITIATED
+  SUCCEEDED
+  FAILED
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentProvider {
+  STRIPE
+  EASYPAISA
+  JAZZCASH
+}
+
+enum NoticeAudience {
+  ALL
+  STUDENTS
+  PARENTS
+  STAFF
+}
+
+// --- Auth -----------------------------------------------------------------
+
+/// Staff/admin account. Intentionally narrow: the public site has no login.
+model User {
+  id           String    @id @default(uuid()) @db.Uuid
+  email        String    @unique @db.VarChar(255)
+  name         String    @db.VarChar(120)
+  /// bcrypt hash. Never a plaintext password. Nullable so that an
+  /// OAuth-linked account (added later) has no local password.
+  passwordHash String?   @db.VarChar(255)
+  role         Role      @default(EDITOR)
+  isActive     Boolean   @default(true)
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  admissionsReviewed Admission[] @relation("AdmissionsReviewed")
+
+  @@index([role])
+  @@map("users")
+}
+
+// --- Content: courses -----------------------------------------------------
+
+/// A course grouping/track, e.g. "Quranic Programs". Backs the tab strip on
+/// the public /courses page.
+model Category {
+  id        String   @id @default(uuid()) @db.Uuid
+  slug      String   @unique @db.VarChar(80)
+  titleEn   String   @db.VarChar(160)
+  titleUr   String   @db.VarChar(160)
+  sortOrder Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  courses Course[]
+
+  @@index([sortOrder])
+  @@map("categories")
+}
+
+model Course {
+  id          String       @id @default(uuid()) @db.Uuid
+  slug        String       @unique @db.VarChar(120)
+  categoryId  String?      @db.Uuid
+  teacherId   String?      @db.Uuid
+
+  /// Short staff-facing code, e.g. "QUR-101". Deliberately distinct from
+  /// `slug`, which is the URL segment: the code is quoted over the phone and
+  /// printed on registers, the slug is never shown to a human. Nullable so an
+  /// imported legacy row without one still loads.
+  code        String?      @unique @db.VarChar(32)
+
+  titleEn     String       @db.VarChar(200)
+  titleUr     String       @db.VarChar(200)
+  summaryEn   String?      @db.Text
+  summaryUr   String?      @db.Text
+  descriptionEn String?    @db.Text
+  descriptionUr String?    @db.Text
+
+  /// Human-facing labels kept as text, not numbers: the fee is administered in
+  /// PKR but the public site shows a formatted string with Urdu numerals.
+  /// The canonical money amounts live on `Payment`, not here.
+  durationEn  String?      @db.VarChar(80)
+  durationUr  String?      @db.VarChar(80)
+  levelEn     String?      @db.VarChar(80)
+  levelUr     String?      @db.VarChar(80)
+
+  deliveryModes DeliveryMode[] @default([])
+  isOnsite      Boolean        @default(false)
+  isOnline      Boolean        @default(false)
+
+  /// Admin lifecycle flag: is this course still being *offered*? Kept separate
+  /// from `isPublished` on purpose. Deactivating withdraws a course from intake
+  /// (it disappears from the admin course list's "active" filter and can no
+  /// longer be attached to a new admission) while its existing published page
+  /// and historical enrolments stay intact. Conflating the two would mean that
+  /// "stop taking applications" also silently pulls the page for students who
+  /// are already enrolled.
+  isActive      Boolean        @default(true)
+  /// Public visibility on /courses.
+  isPublished   Boolean        @default(false)
+  isFeatured    Boolean        @default(false)
+  sortOrder     Int            @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  category   Category?         @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  teacher    Teacher?          @relation(fields: [teacherId], references: [id], onDelete: SetNull)
+  admissions Admission[]
+  sessions   CourseSession[]
+
+  @@index([isPublished, sortOrder])
+  @@index([categoryId])
+  @@map("courses")
+}
+
+/// A scheduled run of a course (a term/class), which is what an admission and
+/// a payment actually attach to. Keeping this separate from `Course` means a
+/// catalog entry can outlive any single term.
+model CourseSession {
+  id        String       @id @default(uuid()) @db.Uuid
+  courseId  String       @db.Uuid
+  startsOn  DateTime?    @db.Date
+  endsOn    DateTime?    @db.Date
+  daysLabel String?      @db.VarChar(120)
+  timeLabel String?      @db.VarChar(120)
+  feeAmount Decimal?     @db.Decimal(10, 2)
+  capacity  Int?
+  isOpen    Boolean      @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  course      Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  admissions  Admission[]
+  enrollments Enrollment[]
+
+  @@index([courseId])
+  @@map("course_sessions")
+}
+
+// --- People ---------------------------------------------------------------
+
+model Student {
+  id        String    @id @default(uuid()) @db.Uuid
+  fullName  String    @db.VarChar(160)
+  /// Institution-issued roll number, e.g. "MTI-2026-0042". Assigned when an
+  /// admission is approved, so it is nullable: a walk-in enquiry, or a student
+  /// record created by the seed, may not have one yet. Unique because the admin
+  /// directory searches on it and it must resolve to exactly one student.
+  rollNumber String?  @unique @db.VarChar(32)
+  /// Kept optional: a walk-in enquiry may not have an email yet.
+  email     String?   @db.VarChar(255)
+  phone     String?   @db.VarChar(32)
+  guardianName String? @db.VarChar(160)
+  guardianPhone String? @db.VarChar(32)
+
+  isActive  Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  admissions Admission[]
+  enrollments Enrollment[]
+  payments   Payment[]
+
+  @@index([email])
+  @@map("students")
+}
+
+model Teacher {
+  id        String    @id @default(uuid()) @db.Uuid
+  fullName  String    @db.VarChar(160)
+  slug      String    @unique @db.VarChar(120)
+  /// Subjects taught, one per line in the source form; normalised to `subjects`.
+  subjects  String[]  @default([])
+  bioEn     String?   @db.Text
+  bioUr     String?   @db.Text
+  photoUrl  String?   @db.VarChar(500)
+  isActive  Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  courses Course[]
+
+  @@map("teachers")
+}
+
+/// An applicant, before they become an enrolled student.
+model Admission {
+  id        String   @id @default(uuid()) @db.Uuid
+  /// Human-facing reference, e.g. "ADM-2026-0007". Unique so the front desk
+  /// can quote it over the phone.
+  reference String   @unique @db.VarChar(32)
+  studentId String   @db.Uuid
+  courseId  String?  @db.Uuid
+  sessionId String?  @db.Uuid
+  /// Null until an admin picks it up.
+  reviewedById String? @db.Uuid
+
+  status    AdmissionStatus @default(PENDING)
+  appliedAt DateTime         @default(now())
+  reviewedAt DateTime?
+
+  notes     String?   @db.Text
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  student    Student       @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  course     Course?       @relation(fields: [courseId], references: [id], onDelete: SetNull)
+  session    CourseSession? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+  reviewedBy User?         @relation("AdmissionsReviewed", fields: [reviewedById], references: [id], onDelete: SetNull)
+
+  enrollments Enrollment[]
+  payments    Payment[]
+
+  @@index([status, appliedAt])
+  @@index([studentId])
+  @@map("admissions")
+}
+
+/// Confirms an admission was accepted and the student is attending a session.
+model Enrollment {
+  id         String   @id @default(uuid()) @db.Uuid
+  studentId  String   @db.Uuid
+  admissionId String  @db.Uuid
+  sessionId  String   @db.Uuid
+  enrolledAt DateTime @default(now())
+
+  student  Student       @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  admission Admission   @relation(fields: [admissionId], references: [id], onDelete: Cascade)
+  session  CourseSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, sessionId])
+  @@map("enrollments")
+}
+
+// --- Content: editorial ---------------------------------------------------
+
+model Event {
+  id          String   @id @default(uuid()) @db.Uuid
+  slug        String   @unique @db.VarChar(140)
+  titleEn     String   @db.VarChar(200)
+  titleUr     String   @db.VarChar(200)
+  descriptionEn String? @db.Text
+  descriptionUr String? @db.Text
+  startsAt    DateTime
+  endsAt      DateTime?
+  locationEn  String?  @db.VarChar(200)
+  locationUr  String?  @db.VarChar(200)
+  isPublished Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([isPublished, startsAt])
+  @@map("events")
+}
+
+model Notice {
+  id          String         @id @default(uuid()) @db.Uuid
+  titleEn     String         @db.VarChar(200)
+  titleUr     String         @db.VarChar(200)
+  bodyEn      String?        @db.Text
+  bodyUr      String?        @db.Text
+  audience    NoticeAudience @default(ALL)
+  isPinned    Boolean        @default(false)
+  isPublished Boolean        @default(false)
+  publishedAt DateTime?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@index([isPublished, publishedAt])
+  @@map("notices")
+}
+
+model GalleryItem {
+  id          String   @id @default(uuid()) @db.Uuid
+  titleEn     String?  @db.VarChar(200)
+  titleUr     String?  @db.VarChar(200)
+  imageUrl    String   @db.VarChar(500)
+  /// Dominant colour, reused by the existing <ImagePlaceholder> styling while
+  /// a real photo is still missing.
+  placeholderHex String? @db.VarChar(9)
+  altEn       String?  @db.VarChar(255)
+  altUr       String?  @db.VarChar(255)
+  takenOn     DateTime? @db.Date
+  sortOrder   Int      @default(0)
+  isPublished Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([isPublished, sortOrder])
+  @@map("gallery_items")
+}
+
+/// Public "Contact" form submissions.
+model ContactMessage {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String   @db.VarChar(160)
+  email     String   @db.VarChar(255)
+  phone     String?  @db.VarChar(32)
+  subject   String?  @db.VarChar(200)
+  message   String   @db.Text
+  /// Set once a staff member has acted on it.
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([isRead, createdAt])
+  @@map("contact_messages")
+}
+
+// --- Payments (schema only — NOT implemented) -----------------------------
+
+/// Payment records are provider-agnostic on purpose: adding Stripe, Easypaisa
+/// or JazzCash means writing a handler that fills in `provider` and
+/// `providerReference`. It must NOT mean changing this table or any code that
+/// already reads it.
+///
+/// There is currently NO payment code in this application: no SDK is
+/// installed, no webhook route exists, and nothing writes to this table.
+model Payment {
+  id           String   @id @default(uuid()) @db.Uuid
+  /// Reference to the payer. Nullable so a prospective student's instalment
+  /// can be recorded before a Student row is created.
+  studentId    String?  @db.Uuid
+  /// What the money was for.
+  admissionId  String?  @db.Uuid
+
+  amount       Decimal  @db.Decimal(12, 2)
+  /// ISO 4217. Defaults to PKR; the college bills in rupees.
+  currency     String   @default("PKR") @db.Char(3)
+  status       PaymentStatus @default(PENDING)
+  /// Null until a gateway is actually chosen for this payment.
+  provider     PaymentProvider?
+  /// The gateway's own transaction id. Unique so a replayed webhook callback
+  /// can be rejected idempotently rather than double-crediting.
+  providerReference String? @unique @db.VarChar(191)
+  /// Gateway payload, retained for reconciliation/refunds.
+  metadata     Json?
+  paidAt       DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  student   Student?   @relation(fields: [studentId], references: [id], onDelete: SetNull)
+  admission Admission? @relation(fields: [admissionId], references: [id], onDelete: SetNull)
+
+  @@index([status, createdAt])
+  @@index([studentId])
+  @@map("payments")
+}

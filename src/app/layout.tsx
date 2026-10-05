@@ -58,6 +58,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       dir="ltr"
+      data-scroll-behavior="smooth"
       className={`${fraunces.variable} ${manrope.variable} ${notoUrdu.variable} h-full antialiased`}
       suppressHydrationWarning
     >

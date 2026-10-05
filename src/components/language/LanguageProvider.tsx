@@ -6,7 +6,7 @@ import {
   useContext,
   useEffect,
   useMemo,
-  useState,
+  useSyncExternalStore,
   type ReactNode,
 } from "react";
 import { DICTS, DIRECTIONS, type Dict, type Lang } from "@/lib/i18n";
@@ -23,29 +23,62 @@ const LanguageContext = createContext<LanguageContextValue | null>(null);
 
 const STORAGE_KEY = "mti-lang";
 
-export function LanguageProvider({ children }: { children: ReactNode }) {
-  // Initial state matches the SSR default (English) so hydration markup agrees.
-  const [lang, setLangState] = useState<Lang>("en");
+function isLang(value: string | null): value is Lang {
+  return value === "en" || value === "ur";
+}
 
-  // Restore the saved preference after mount, then keep <html> in sync.
-  useEffect(() => {
+// The active language lives in localStorage, so it is treated as an external
+// store rather than React state. useSyncExternalStore lets React restore the
+// saved preference without a setState-in-effect cascade: the server (and the
+// hydration render) uses getServerSnapshot, and React swaps in the client
+// snapshot once hydration finishes — same visible result as restoring in an
+// effect, without the cascading render.
+function readStoredLang(): Lang {
+  try {
     const stored = window.localStorage.getItem(STORAGE_KEY);
-    if (stored === "ur" || stored === "en") {
-      setLangState(stored);
-    }
-  }, []);
+    return isLang(stored) ? stored : "en";
+  } catch {
+    // Private-mode / storage-disabled browsers fall back to English.
+    return "en";
+  }
+}
 
+function getServerLang(): Lang {
+  return "en";
+}
+
+const subscribers = new Set<() => void>();
+
+function subscribe(onStoreChange: () => void) {
+  subscribers.add(onStoreChange);
+  // Keep other tabs in sync.
+  window.addEventListener("storage", onStoreChange);
+  return () => {
+    subscribers.delete(onStoreChange);
+    window.removeEventListener("storage", onStoreChange);
+  };
+}
+
+function persistLang(next: Lang) {
+  window.localStorage.setItem(STORAGE_KEY, next);
+  subscribers.forEach((onStoreChange) => onStoreChange());
+}
+
+export function LanguageProvider({ children }: { children: ReactNode }) {
+  const lang = useSyncExternalStore(subscribe, readStoredLang, getServerLang);
+
+  // Keep <html> in sync with the active language (RTL flip lives here).
+  // Persistence happens in persistLang, so no extra localStorage write.
   useEffect(() => {
     const root = document.documentElement;
     root.lang = lang;
     root.dir = DIRECTIONS[lang];
-    window.localStorage.setItem(STORAGE_KEY, lang);
   }, [lang]);
 
-  const setLang = useCallback((next: Lang) => setLangState(next), []);
+  const setLang = useCallback((next: Lang) => persistLang(next), []);
   const toggle = useCallback(
-    () => setLangState((prev) => (prev === "en" ? "ur" : "en")),
-    [],
+    () => persistLang(lang === "en" ? "ur" : "en"),
+    [lang],
   );
 
   const value = useMemo<LanguageContextValue>(

@@ -4,7 +4,7 @@ import AboutHeading from "@/components/about/AboutHeading";
 import { useLang } from "@/components/language/LanguageProvider";
 
 export default function HistoryTimeline() {
-  const { t, lang } = useLang();
+  const { t } = useLang();
   const { history } = t.pages.about;
   return (
     <section className="bg-beige py-24" aria-labelledby="history-heading">
